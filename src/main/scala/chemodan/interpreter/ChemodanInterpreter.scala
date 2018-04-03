@@ -20,7 +20,7 @@ object ChemodanInterpreter {
       for {
         tokens <- ChemodanLexer(code).right
       } yield tokens
-    println(toks)
+    // println(toks)
     val tree =
       for {
         tokens <- ChemodanLexer(code).right
