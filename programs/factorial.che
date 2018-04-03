@@ -1,0 +1,19 @@
+global n
+global res
+
+procedure factorial
+    res += 1
+    alloc i = 0
+        start i = 0 loop
+            i += 1
+            alloc tmp = res * i
+                res <=> tmp
+            free tmp = res / i
+        until i = n
+    free i = n
+
+procedure main
+    read n
+    call factorial
+    print n
+    print res
