@@ -29,7 +29,8 @@ object ChemodanInterpreter {
     // println(tree)
     tree match {
       case Right(tr) => if (rev) interpret(reverse(tr)) else interpret(tr)
-      case Left(msg) => println(msg)
+      // case Left(msg) => println(msg)
+      case Left(msg) => throw new Error(msg.toString)
     }
   }
   // Reverse a given AST

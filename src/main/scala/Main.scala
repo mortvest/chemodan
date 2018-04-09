@@ -26,9 +26,9 @@ object ChemodanMain{
 // ********************************************************
 // """)
     if (reverse) {
-      println(s"> $fileName <<< RUNNING BACKWARDS")
+      println(s"USER PROGRAM <<< $fileName <<< RUNNING BACKWARDS")
     }else{
-      println(s"> $fileName >>> RUNNING FORWARDS")
+      println(s"USER PROGRAM >>> $fileName >>> RUNNING FORWARDS")
     }
     println()
   }
