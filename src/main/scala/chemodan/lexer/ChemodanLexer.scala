@@ -17,7 +17,8 @@ object ChemodanLexer extends RegexParsers {
   def tokens: Parser[List[ChemodanToken]] = {
     phrase(rep1(procedure | global | ifStatement | thenStatement | elseStatement
       | fiStatement | procCall | procUncall | start | loop | until | alloc | free | swap
-      | printVal | readVal | procUncall | assignPlus | assignMinus | number | equals | less | plus
+      | printVal | readVal | procUncall | assignPlus | assignMinus | number | neq | leq | less | equals
+      | plus
       | minus | mult | div | mod | parLeft | parRight | identifier | indentation)) ^^ { rawTokens =>
       processIndentations(rawTokens)
     }
@@ -70,26 +71,28 @@ object ChemodanLexer extends RegexParsers {
     }
   }
 
-  def global        = positioned { "global"        ^^ (_ => GLOBAL()) }
-  def procedure     = positioned { "procedure"     ^^ (_ => PROCEDURE()) }
-  def printVal      = positioned { "print"         ^^ (_ => PRINT()) }
-  def readVal       = positioned { "read"          ^^ (_ => READ()) }
-  def ifStatement   = positioned { "if"            ^^ (_ => IF()) }
+  def global        = positioned { "global "       ^^ (_ => GLOBAL()) }
+  def procedure     = positioned { "procedure "    ^^ (_ => PROCEDURE()) }
+  def printVal      = positioned { "print "        ^^ (_ => PRINT()) }
+  def readVal       = positioned { "read "         ^^ (_ => READ()) }
+  def ifStatement   = positioned { "if "           ^^ (_ => IF()) }
   def thenStatement = positioned { "then"          ^^ (_ => THEN()) }
   def elseStatement = positioned { "else"          ^^ (_ => ELSE()) }
-  def fiStatement   = positioned { "fi"            ^^ (_ => FI()) }
-  def start         = positioned { "start"         ^^ (_ => START()) }
+  def fiStatement   = positioned { "fi "           ^^ (_ => FI()) }
+  def start         = positioned { "start "        ^^ (_ => START()) }
   def loop          = positioned { "loop"          ^^ (_ => LOOP()) }
-  def until         = positioned { "until"         ^^ (_ => UNTIL()) }
+  def until         = positioned { "until "        ^^ (_ => UNTIL()) }
   def assignPlus    = positioned { "+="            ^^ (_ => ASSIGNPLUS()) }
   def assignMinus   = positioned { "-="            ^^ (_ => ASSIGNMINUS()) }
   def procCall      = positioned { "call"          ^^ (_ => CALL()) }
-  def procUncall    = positioned { "uncall"        ^^ (_ => UNCALL()) }
-  def alloc         = positioned { "alloc"         ^^ (_ => ALLOC()) }
-  def free          = positioned { "free"          ^^ (_ => FREE()) }
+  def procUncall    = positioned { "uncall "       ^^ (_ => UNCALL()) }
+  def alloc         = positioned { "alloc "        ^^ (_ => ALLOC()) }
+  def free          = positioned { "free "         ^^ (_ => FREE()) }
   def swap          = positioned { "<=>"           ^^ (_ => SWAP()) }
   def equals        = positioned { "="             ^^ (_ => EQUALS()) }
   def less          = positioned { "<"             ^^ (_ => LESS()) }
+  def leq           = positioned { "<="            ^^ (_ => LEQ()) }
+  def neq           = positioned { "!="            ^^ (_ => NEQ()) }
   def plus          = positioned { "+"             ^^ (_ => PLUS()) }
   def minus         = positioned { "-"             ^^ (_ => MINUS()) }
   def mult          = positioned { "*"             ^^ (_ => MULT()) }

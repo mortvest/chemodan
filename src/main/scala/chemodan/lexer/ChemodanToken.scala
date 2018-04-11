@@ -31,6 +31,8 @@ case class SWAP() extends ChemodanToken
 
 case class EQUALS() extends ChemodanToken
 case class LESS() extends ChemodanToken
+case class LEQ() extends ChemodanToken
+case class NEQ() extends ChemodanToken
 case class PLUS() extends ChemodanToken
 case class MINUS() extends ChemodanToken
 case class MULT() extends ChemodanToken

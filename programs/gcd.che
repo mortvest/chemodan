@@ -1,0 +1,22 @@
+global a
+global b
+
+procedure gcd
+    start b < a loop
+        alloc tmp = a
+            if b < tmp then
+                a -= b
+            else
+                a <=> b
+                a -= b
+            fi b < tmp
+            print tmp
+        free tmp = 0
+    until a = b
+
+procedure main
+    read a
+    read b
+    call gcd
+    print a
+    print b

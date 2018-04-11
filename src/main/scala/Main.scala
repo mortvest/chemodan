@@ -1,3 +1,12 @@
+// ********************************************************
+// **                                                    **
+// **     #   # ##### #   #  ###   ####    #   #   #     **
+// **     #   # #     ## ## #   #  #  #   # #  #   #     **
+// **      #### ####  # # # #   #  #  #  ##### #####     **
+// **         # #     #   # #   #  ####  #   # #   #     **
+// **         # ##### #   #  ###  #    # #   # #   #     **
+// **                                                    **
+// ********************************************************
 package chemodan
 
 import chemodan.interpreter.{Location, ChemodanInterpreter, ChemodanParserError}
@@ -8,23 +17,13 @@ import scala.io.Source
 // Setting up command line arguments
 class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
   val rev = opt[Boolean](descr = "Run program backwards")
+  val debug = opt[Boolean](descr = "Debug mode")
   val file = trailArg[String](required = true)
   verify()
 }
 
 object ChemodanMain{
   def printLogo (fileName: String, reverse: Boolean){
-//     print("""
-// ********************************************************
-// **                                                    **
-// **     #   # ##### #   #  ###   ####    #   #   #     **
-// **     #   # #     ## ## #   #  #  #   # #  #   #     **
-// **      #### ####  # # # #   #  #  #  ##### #####     **
-// **         # #     #   # #   #  ####  #   # #   #     **
-// **         # ##### #   #  ###  #    # #   # #   #     **
-// **                                                    **
-// ********************************************************
-// """)
     if (reverse) {
       println(s"USER PROGRAM <<< $fileName <<< RUNNING BACKWARDS")
     }else{
@@ -39,24 +38,9 @@ object ChemodanMain{
     dirPattern.findFirstIn(conf.file()) match {
       case Some(dir) =>
         val fileContent = Source.fromFile(conf.file()).getLines.mkString("\n")
-        conf.rev() match {
-          case false =>
-            printLogo(dir, false)
-            ChemodanInterpreter(fileContent, false)
-          case _ =>
-            printLogo(dir, true)
-            ChemodanInterpreter(fileContent, true)
-        }
+        printLogo(dir, conf.rev())
+        ChemodanInterpreter(fileContent, conf.rev(), conf.debug())
       case None => println("Please provide a .che file")
     }
   }
-  // val validCode =
-  //   """
-  //   |global x
-  //   |
-  //   |procedure main
-  //   |    read x
-  //   |    print x
-  // """.stripMargin.trim
-  // ChemodanInterpreter(validCode)
 }

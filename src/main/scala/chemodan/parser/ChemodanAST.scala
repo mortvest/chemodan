@@ -25,6 +25,8 @@ case class Number(value: Int) extends Expression
 case class Variable(varName: String) extends Expression
 case class Equals(exp1: Expression, exp2: Expression) extends Expression
 case class Less(exp1: Expression, exp2: Expression) extends Expression
+case class Leq(exp1: Expression, exp2: Expression) extends Expression
+case class Neq(exp1: Expression, exp2: Expression) extends Expression
 case class Plus(exp1: Expression, exp2: Expression) extends Expression
 case class Minus(exp1: Expression, exp2: Expression) extends Expression
 case class Mult(exp1: Expression, exp2: Expression) extends Expression

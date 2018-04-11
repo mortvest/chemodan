@@ -76,10 +76,12 @@ object ChemodanParser extends Parsers with PackratParsers{
     literal | variable | PLEFT() ~> expression <~ PRIGHT()
   }
 
-  lazy val expression: Parser[Expression] = formula ~ rep((EQUALS() | LESS()) ~ formula) ^^ {
+  lazy val expression: Parser[Expression] = formula ~ rep((EQUALS() | LESS() | LEQ() | NEQ()) ~ formula) ^^ {
     case t ~ ts => ts.foldLeft(t) {
       case (t1, LESS() ~ t2) => Less(t1, t2)
       case (t1, EQUALS() ~ t2) => Equals(t1, t2)
+      case (t1, NEQ() ~ t2) => Neq(t1, t2)
+      case (t1, LEQ() ~ t2) => Leq(t1, t2)
     }
   }
 

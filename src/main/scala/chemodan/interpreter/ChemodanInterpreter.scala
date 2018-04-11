@@ -15,18 +15,23 @@ object ChemodanInterpreter {
     throw new Error(errorMsg)
   }
   // def apply(code: String): Either[ChemodanInterpretationError, ChemodanAST] = {
-  def apply(code: String, rev: Boolean): Unit = {
+  def apply(code: String, rev: Boolean, debug: Boolean): Unit = {
     val toks =
       for {
         tokens <- ChemodanLexer(code).right
       } yield tokens
-    // println(toks)
     val tree =
       for {
         tokens <- ChemodanLexer(code).right
         ast <- ChemodanParser(tokens).right
       } yield ast
-    // println(tree)
+    if (debug) {
+      println("TOKENS:")
+      println(toks)
+      println("AST:")
+      println(tree)
+      println("PROGRAM:")
+    }
     tree match {
       case Right(tr) => if (rev) interpret(reverse(tr)) else interpret(tr)
       // case Left(msg) => println(msg)
@@ -71,13 +76,13 @@ object ChemodanInterpreter {
       }
       case Print(varName) =>
         val value = eval(Variable(varName), varMap)
-        println(s"$varName = $value")
+        println(s"<< $varName = $value")
         varMap.update(varName, 0)
       case Read(varName) =>
         eval(Variable(varName), varMap) match {
           case 0 =>
             try {
-              print(s"$varName = ")
+              print(s">> $varName = ")
               val input = readInt()
               varMap.update(varName, input)
             } catch {
@@ -187,6 +192,8 @@ object ChemodanInterpreter {
       }
       case Equals(exp1, exp2) => if(eval(exp1, map) == eval(exp2, map)) 1 else 0
       case Less(exp1, exp2)   => if(eval(exp1, map) < eval(exp2, map)) 1 else 0
+      case Leq(exp1, exp2)   => if(eval(exp1, map) <= eval(exp2, map)) 1 else 0
+      case Neq(exp1, exp2)   => if(eval(exp1, map) != eval(exp2, map)) 1 else 0
       case Plus(exp1, exp2)   => eval(exp1, map) + eval(exp2, map)
       case Minus(exp1, exp2)  => eval(exp1, map) - eval(exp2, map)
       case Mult(exp1, exp2)   => eval(exp1, map) * eval(exp2, map)

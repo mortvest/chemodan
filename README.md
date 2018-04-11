@@ -1,4 +1,16 @@
-# chemodan
+# Chemodan
 A simple reversible programming language written in Scala
+## Requirements
+* scala
+* sbt
+
+Scala uses a sophisticated project building system called sbt. It will update
+itself and Scala to the version, necessary for the project and download all the needed packages
+when the script "chemodan" from the root directory is ran for the first time.
 ## Usage
-./chemodan (-r: optional) <filename.che>
+./chemodan [-r: run backwards] <filename.che>
+## Examples
+### Run gcd program forwards:
+./chemodan ./programs/gcd.che
+### Run factorial program backwards:
+./chemodan -r ./programs/factorial.che

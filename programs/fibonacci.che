@@ -1,0 +1,21 @@
+global first
+global second
+global n
+
+procedure fibonacci
+    if n = 0 then
+        first += 1
+        second += 1
+    else
+        n -= 1
+        call fibonacci
+        first += second
+        first <=> second
+    fi first = second
+
+procedure main
+    read n
+    call fibonacci
+    print n
+    print first
+    print second
