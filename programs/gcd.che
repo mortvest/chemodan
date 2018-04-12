@@ -2,7 +2,7 @@ global a
 global b
 
 procedure gcd
-    start b < a loop
+    start b < a do
         alloc tmp = a
             if b < tmp then
                 a -= b

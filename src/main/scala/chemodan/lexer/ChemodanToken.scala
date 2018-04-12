@@ -20,6 +20,7 @@ case class ELSE() extends ChemodanToken
 case class FI() extends ChemodanToken
 case class START() extends ChemodanToken
 case class LOOP() extends ChemodanToken
+case class DOSTMT() extends ChemodanToken
 case class UNTIL() extends ChemodanToken
 case class ASSIGNPLUS() extends ChemodanToken
 case class ASSIGNMINUS() extends ChemodanToken
@@ -40,3 +41,5 @@ case class DIV() extends ChemodanToken
 case class MOD() extends ChemodanToken
 case class PLEFT() extends ChemodanToken
 case class PRIGHT() extends ChemodanToken
+case class SQBLEFT() extends ChemodanToken
+case class SQBRIGHT() extends ChemodanToken

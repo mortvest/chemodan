@@ -4,7 +4,7 @@ global res
 procedure factorial
     res += 1
     alloc i = 0
-        start i = 0 loop
+        start i = 0 do
             i += 1
             alloc tmp = res * i
                 res <=> tmp

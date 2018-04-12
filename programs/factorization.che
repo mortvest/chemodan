@@ -1,0 +1,59 @@
+global num
+global fact[20]
+
+procedure factor
+    alloc try = 0
+        alloc i = 0
+            start ((try = 0) * (1 < num)) loop
+                call nexttry
+                start (fact[i] != try) loop
+                    i += 1
+                    fact[i] += try
+                    alloc z = (num / try)
+                        z <=> num
+                    free z = num * try
+                until (num % try != 0)
+            until num < (try * try)
+            if num != 1 then
+                i += 1
+                fact[i] <=> num
+            else
+                num -= 1
+            fi (fact[i] != fact[i - 1])
+            if (fact[i - 1] * fact[i - 1]) < fact[i] then
+                start fact[i] < (try * try) loop
+                    uncall nexttry
+                until try = 0
+            else
+                try -= fact[i - 1]
+            fi (fact[i - 1] * fact[i - 1]) < fact[i]
+            call zeroi
+        free i = 0
+    free try = 0
+    fact[0] += 1
+
+procedure zeroi
+    start fact[i+1] = 0 loop
+        i -= 1
+    until i = 0
+
+procedure nexttry
+    try += 2
+    if try = 4 then
+        try -= 1
+    else
+        try += 0
+    fi try = 3
+
+procedure printArr
+    alloc n = 0
+        start n=0 loop
+            print fact[n]
+            n += 1
+        until n=20
+    free n=20
+
+procedure main
+    read num
+    call factor
+    call printArr

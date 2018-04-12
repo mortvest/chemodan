@@ -16,9 +16,9 @@ object ChemodanLexer extends RegexParsers {
 
   def tokens: Parser[List[ChemodanToken]] = {
     phrase(rep1(procedure | global | ifStatement | thenStatement | elseStatement
-      | fiStatement | procCall | procUncall | start | loop | until | alloc | free | swap
+      | fiStatement | procCall | procUncall | start | loop | doStmt | until | alloc | free | swap
       | printVal | readVal | procUncall | assignPlus | assignMinus | number | neq | leq | less | equals
-      | plus
+      | plus | sqbLeft | sqbRight
       | minus | mult | div | mod | parLeft | parRight | identifier | indentation)) ^^ { rawTokens =>
       processIndentations(rawTokens)
     }
@@ -81,6 +81,7 @@ object ChemodanLexer extends RegexParsers {
   def fiStatement   = positioned { "fi "           ^^ (_ => FI()) }
   def start         = positioned { "start "        ^^ (_ => START()) }
   def loop          = positioned { "loop"          ^^ (_ => LOOP()) }
+  def doStmt        = positioned { "do"            ^^ (_ => DOSTMT()) }
   def until         = positioned { "until "        ^^ (_ => UNTIL()) }
   def assignPlus    = positioned { "+="            ^^ (_ => ASSIGNPLUS()) }
   def assignMinus   = positioned { "-="            ^^ (_ => ASSIGNMINUS()) }
@@ -100,4 +101,6 @@ object ChemodanLexer extends RegexParsers {
   def mod           = positioned { "%"             ^^ (_ => MOD()) }
   def parLeft       = positioned { "("             ^^ (_ => PLEFT()) }
   def parRight      = positioned { ")"             ^^ (_ => PRIGHT()) }
+  def sqbLeft       = positioned { "["             ^^ (_ => SQBLEFT()) }
+  def sqbRight      = positioned { "]"             ^^ (_ => SQBRIGHT()) }
 }

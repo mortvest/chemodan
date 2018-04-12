@@ -28,7 +28,9 @@ object ChemodanParser extends Parsers with PackratParsers{
       case _ ~ IDENTIFIER(name) ~ _ ~ stmt ~ _ => Procedure(name, stmt)
     }
     val global = GLOBAL() ~ identifier ^^ { case _ ~ IDENTIFIER(name) => GlobalVar(name) }
-    procedure | global
+    val globalArr = GLOBAL() ~ identifier ~ SQBLEFT() ~ number ~ SQBRIGHT() ^^ {
+      case _ ~ IDENTIFIER(name) ~ _ ~ NUMBER(num) ~ _ => GlobalArray(name, num) }
+    procedure | globalArr | global
   }
 
   def program: Parser[ChemodanAST] = positioned {
@@ -47,33 +49,63 @@ object ChemodanParser extends Parsers with PackratParsers{
       case _ ~ ifcond ~ _ ~ _ ~ thenblock ~ _ ~ _ ~ _ ~ elseblock ~ _ ~ _ ~ ficond =>
         IfThen(ifcond, thenblock, elseblock, ficond)
     }
-    val repeatLoop = START() ~ expression ~ LOOP() ~ INDENT() ~ block ~ DEDENT() ~
+    val repeatLoop = START() ~ expression ~ DOSTMT() ~ INDENT() ~ block ~ DEDENT() ~
     UNTIL() ~ expression ^^ {
       case _ ~ fromExp ~ _ ~ _ ~ loopStat ~ _ ~ _ ~ untilExp => Repeat(fromExp, loopStat, untilExp)
     }
+    val altLoop = START() ~ expression ~ LOOP() ~ INDENT() ~ block ~ DEDENT() ~
+    UNTIL() ~ expression ^^ {
+      case _ ~ fromExp ~ _ ~ _ ~ loopStat ~ _ ~ _ ~ untilExp => Loop(fromExp, loopStat, untilExp)
+    }
+
     val assignPlus = identifier ~ ASSIGNPLUS() ~ expression ^^ {
       case IDENTIFIER(id) ~ _ ~ exp => AssignPlus(id, exp)
     }
     val assignMinus = identifier ~ ASSIGNMINUS() ~ expression ^^ {
       case IDENTIFIER(id) ~ _ ~ exp => AssignMinus(id, exp)
     }
+    val assignMinusArr = identifier ~ SQBLEFT() ~ expression ~ SQBRIGHT() ~ ASSIGNMINUS() ~ expression ^^ {
+      case IDENTIFIER(id) ~ _ ~ exp1 ~ _ ~ _ ~ exp2 => AssignMinusArr(id, exp1, exp2)
+    }
+    val assignPlusArr = identifier ~ SQBLEFT() ~ expression ~ SQBRIGHT() ~ ASSIGNPLUS() ~ expression ^^ {
+      case IDENTIFIER(id) ~ _ ~ exp1 ~ _ ~ _ ~ exp2 => AssignPlusArr(id, exp1, exp2)
+    }
     val printVal = PRINT() ~ identifier ^^ { case _ ~ IDENTIFIER(id) => Print(id) }
     val readVal  = READ()  ~ identifier ^^ { case _ ~ IDENTIFIER(id) => Read(id) }
+    val printArr = PRINT() ~ identifier ~ SQBLEFT() ~ expression ~ SQBRIGHT() ^^ {
+      case _ ~ IDENTIFIER(id) ~ _ ~ exp ~ _ => PrintArr(id, exp)
+    }
+    val readArr = READ() ~ identifier ~ SQBLEFT() ~ expression ~ SQBRIGHT() ^^ {
+      case _ ~ IDENTIFIER(id) ~ _ ~ exp ~ _ => ReadArr(id, exp)
+    }
     val swap = identifier ~ SWAP() ~ identifier ^^ {
       case  IDENTIFIER(id1) ~ _ ~ IDENTIFIER(id2) => Swap(id1, id2)
+    }
+    val swapAV = identifier ~ SQBLEFT() ~ expression ~ SQBRIGHT() ~ SWAP() ~ identifier ^^ {
+      case IDENTIFIER(idArr) ~ _ ~ exp ~ _ ~ _ ~ IDENTIFIER(idVal) => SwapAV(idArr, exp, idVal)
+    }
+    val swapVA = identifier ~ SWAP() ~ identifier ~ SQBLEFT() ~ expression ~ SQBRIGHT() ^^ {
+      case IDENTIFIER(idVal) ~ _ ~ IDENTIFIER(idArr) ~ _ ~ exp ~ _  => SwapAV(idArr, exp, idVal)
+    }
+    val swapAA = identifier ~ SQBLEFT() ~ expression ~ SQBRIGHT() ~ SWAP() ~ identifier ~
+    SQBLEFT() ~ expression ~ SQBRIGHT() ^^ {
+      case IDENTIFIER(idArr1) ~ _ ~ exp1 ~ _ ~ _ ~ IDENTIFIER(idArr2) ~ _ ~ exp2 ~ _  =>
+        SwapAA(idArr1, exp1, idArr2, exp2)
     }
     val localVar = ALLOC() ~ identifier ~ EQUALS() ~ expression ~
     INDENT() ~ block ~ DEDENT() ~ FREE() ~ identifier ~ EQUALS() ~ expression ^^ {
       case _ ~ IDENTIFIER(id1) ~ _ ~ exp1 ~ _ ~ blk ~ _ ~ _ ~ IDENTIFIER(id2) ~ _ ~ exp2 =>
         LocalVar(id1, exp1, blk, id2, exp2)
     }
-    procCall | procUncall | ifThen | repeatLoop | assignPlus | assignMinus | printVal | readVal | swap | localVar
+    procCall | procUncall | ifThen | altLoop | repeatLoop | assignPlusArr | assignMinusArr | swapAA | swapVA | swapAV | assignPlus | assignMinus | printArr | readArr | printVal | readVal | swap | localVar
   }
 
   def value: Parser[Expression] = positioned {
+    val arrElement = identifier ~ SQBLEFT() ~ expression ~ SQBRIGHT() ^^ {
+      case IDENTIFIER(id) ~ _ ~ exp ~ _ => ArrElement(exp, id) }
     val literal = number ^^ { case NUMBER(num) => Number(num) }
     val variable = identifier ^^ { case IDENTIFIER(id) => Variable(id) }
-    literal | variable | PLEFT() ~> expression <~ PRIGHT()
+    arrElement | literal | variable | PLEFT() ~> expression <~ PRIGHT()
   }
 
   lazy val expression: Parser[Expression] = formula ~ rep((EQUALS() | LESS() | LEQ() | NEQ()) ~ formula) ^^ {

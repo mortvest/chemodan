@@ -10,7 +10,7 @@ when the script "chemodan" from the root directory is ran for the first time.
 ## Usage
 ./chemodan [-r: run backwards] <filename.che>
 ## Examples
-### Run gcd program forwards:
-./chemodan ./programs/gcd.che
-### Run factorial program backwards:
-./chemodan -r ./programs/factorial.che
+### Run factorial program forwards:
+./chemodan ./programs/factorial.che
+### Run factorization program backwards:
+./chemodan -r ./programs/factorization.che
